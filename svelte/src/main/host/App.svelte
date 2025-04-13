@@ -4,7 +4,7 @@
   import { fetch_ } from "/shared/helper";
   import clickSFX from "./click.wav";
 
-  const SPINTIME = 500;
+  const SPINTIME = 15000;
 
   let audioContext: AudioContext;
   let clickBuffer: AudioBuffer | null = null;
@@ -231,7 +231,7 @@
   <div
     id="selected-dare"
     class="text-white px-1 py-2 absolute w-full text-center shadow-[0_0_20px_20px_rgba(0,0,0,0.8)] bg-[rgba(0,0,0,0.8)] text-3xl font-bold drop-shadow-2xl"
-    class:hidden={isSpinning || !displayDare}
+    class:hidden={isSpinning || !displayDare || dares.length < 2}
   >
     <span class="text-red-300">{pickedUser}</span><br />
     {displayDare}
@@ -285,7 +285,7 @@
 
   .roulette-wheel {
     /* IMP: DO NOT CHANGE THIS CUBIC BEZIER FUNCTION */
-    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: transform 15s cubic-bezier(0.19, 1, 0.22, 1);
     /* transition: transform 15s linear; */
     margin: 1em;
     width: min(100vh, 100vw); /* set width to desired pie diameter */
