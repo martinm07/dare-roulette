@@ -1,0 +1,12 @@
+cog1-svgrepo-com.svg
+main\home\index.html
+main\host\index.html
+main\player\index.html
+static\main\aud\click-Hf2CT4va.wav
+static\main\css\host-BILcwow0.css
+static\main\css\player-WjiJfP1Y.css
+static\main\css\tailwindinit-BBv9SNFV.css
+static\main\js\home-DfvFOrJF.js
+static\main\js\host-Cox08RAd.js
+static\main\js\player-CTDT7U-V.js
+static\main\js\svelte-CJBn0zUV.js
