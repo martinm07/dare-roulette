@@ -5,8 +5,9 @@ main\player\index.html
 static\main\aud\click-Hf2CT4va.wav
 static\main\css\host-OgzLXixP.css
 static\main\css\player-WjiJfP1Y.css
-static\main\css\tailwindinit-BBv9SNFV.css
-static\main\js\home-DfvFOrJF.js
-static\main\js\host-BL-aJLoh.js
-static\main\js\player-CTDT7U-V.js
-static\main\js\svelte-CJBn0zUV.js
+static\main\css\tailwindinit-4PkNqFsI.css
+static\main\js\home-QAEh1wuB.js
+static\main\js\host-CHwZPh6S.js
+static\main\js\if-7-UY-z8t.js
+static\main\js\player-q0zeGIVj.js
+static\main\js\svelte-FNCt5HIX.js

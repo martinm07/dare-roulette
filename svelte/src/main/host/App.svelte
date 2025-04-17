@@ -3,6 +3,7 @@
   import "/shared/tailwindinit.css";
   import { fetch_ } from "/shared/helper";
   import clickSFX from "./click.wav";
+  import ManagePlayers from "./ManagePlayers.svelte";
 
   const SPINTIME = 15000;
 
@@ -78,7 +79,7 @@
   }
 
   let dares: { content: string; by: string; played: boolean }[] = $state([]);
-  $inspect(dares);
+  // $inspect(dares);
   //   "Do 10 push-ups",
   //   "Sing a song of your choice",
   //   "Dance for 1 minute",
@@ -208,6 +209,7 @@
   <a href="/" class="absolute top-4 left-4 text-gray-200 text-xl underline"
     >← Back to home page</a
   >
+  <ManagePlayers />
   <h1 class="text-white text-3xl mb-4">Dare Roulette</h1>
   <div
     id="roulette-wheel"
