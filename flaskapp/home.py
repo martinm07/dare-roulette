@@ -3,10 +3,11 @@ import random
 
 from flask import Blueprint, redirect, render_template, request, session
 from sqlalchemy import and_, select
+from sqlalchemy.exc import IntegrityError
 
 from .extensions import db
 from .helper import cors_enabled
-from .models import Dare
+from .models import Dare, User
 
 bp = Blueprint("home", __name__)
 
@@ -56,11 +57,18 @@ def set_name():
 def add_user():
     name: str = request.data.decode("utf-8")
 
-    current_users = session.get("users", [])
-    if name in current_users:
-        return "Username already exists", 400
+    # current_users = session.get("users", [])
+    # if name in current_users:
+    #     return "Username already exists", 400
 
-    session["users"] = current_users + [name]
+    # session["users"] = current_users + [name]
+
+    new_user = User(name=name)
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+    except IntegrityError:
+        return "Username already exists", 400
 
     return "", 200
 
@@ -70,20 +78,27 @@ def add_user():
 def remove_user():
     name: str = request.data.decode("utf-8")
 
-    current_users: list = session.get("users", [])
-    try:
-        user_id = current_users.index(name)
-        current_users.pop(user_id)
-        session["users"] = current_users
-    except ValueError:
-        return "", 200
+    user = db.session.scalars(select(User).where(User.name == name)).first()
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+
+    # current_users: list = session.get("users", [])
+    # try:
+    #     user_id = current_users.index(name)
+    #     current_users.pop(user_id)
+    #     session["users"] = current_users
+    # except ValueError:
+    #     return "", 200
+
     return "", 200
 
 
 @bp.route("/get_users", methods=["GET"])
 @cors_enabled(methods=["GET"])
 def get_users():
-    current_users = session.get("users", [])
+    # current_users = session.get("users", [])
+    current_users = db.session.scalars(select(User.name)).all()
 
     return current_users, 200
 
@@ -109,7 +124,7 @@ def pick_user():
 def add_dare():
     data: dict = json.loads(request.data.decode("utf-8"))
 
-    new_dare = Dare(content=data["content"], by=session.get("username"))
+    new_dare = Dare(content=data["content"], by=session.get("username", ""))
     db.session.add(new_dare)
     db.session.commit()
 

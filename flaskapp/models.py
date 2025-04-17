@@ -23,3 +23,13 @@ class Dare(db.Model):
     by: Mapped[str] = mapped_column(String(64))
     used: Mapped[bool] = mapped_column(default=False)
     played: Mapped[bool] = mapped_column(default=False)
+
+
+class User(db.Model):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date_created: Mapped[datetime] = mapped_column(
+        server_default=func.current_timestamp()
+    )
+    name: Mapped[str] = mapped_column(String(64), unique=True)
