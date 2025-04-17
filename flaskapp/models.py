@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import func
+from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .extensions import db
@@ -19,7 +19,7 @@ class Dare(db.Model):
     date_created: Mapped[datetime] = mapped_column(
         server_default=func.current_timestamp()
     )
-    content: Mapped[str]
-    by: Mapped[str]
+    content: Mapped[str] = mapped_column(String(256))
+    by: Mapped[str] = mapped_column(String(64))
     used: Mapped[bool] = mapped_column(default=False)
     played: Mapped[bool] = mapped_column(default=False)

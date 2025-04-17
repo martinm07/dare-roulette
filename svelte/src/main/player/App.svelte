@@ -4,6 +4,8 @@
 
   let content = $state("");
 
+  // TODO: Error for when dare str length exceeds 256
+  //  (dont wanna turn it into server db error, deal with it locally)
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();
     console.log("hello world!");
