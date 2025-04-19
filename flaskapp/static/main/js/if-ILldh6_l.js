@@ -1,0 +1,1 @@
+import{l as E,ac as I,r as i,o as u,q as o,ad as N}from"./svelte-DC3VyRT9.js";function m(_,b,[c,h]=[0,0]){var n=_,a=null,e=null,f=N,v=c>0?I:0,r=!1;const p=(s,l=!0)=>{r=!0,t(l,s)},t=(s,l)=>{f!==(f=s)&&(f?(a?i(a):l&&(a=u(()=>l(n))),e&&o(e,()=>{e=null})):(e?i(e):l&&(e=u(()=>l(n,[c+1,h]))),a&&o(a,()=>{a=null})))};E(()=>{r=!1,b(p),r||t(null,null)},v)}export{m as i};
