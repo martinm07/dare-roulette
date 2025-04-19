@@ -33,3 +33,5 @@ class User(db.Model):
         server_default=func.current_timestamp()
     )
     name: Mapped[str] = mapped_column(String(64), unique=True)
+    removed: Mapped[bool] = mapped_column(default=False)
+    picked: Mapped[bool] = mapped_column(default=False)

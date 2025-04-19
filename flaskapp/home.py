@@ -80,7 +80,7 @@ def remove_user():
 
     user = db.session.scalars(select(User).where(User.name == name)).first()
     if user:
-        db.session.delete(user)
+        user.removed = True
         db.session.commit()
 
     # current_users: list = session.get("users", [])
@@ -94,13 +94,16 @@ def remove_user():
     return "", 200
 
 
+def get_active_users():
+    """Get users who have `removed == False`, must be run in app context"""
+    rows = db.session.scalars(select(User).where(User.removed == False)).all()  # noqa: E712
+    return rows
+
+
 @bp.route("/get_users", methods=["GET"])
 @cors_enabled(methods=["GET"])
 def get_users():
-    # current_users = session.get("users", [])
-    current_users = db.session.scalars(select(User.name)).all()
-
-    return current_users, 200
+    return [user.name for user in get_active_users()], 200
 
 
 @bp.route("/pick_user", methods=["GET"])
@@ -111,9 +114,20 @@ def pick_user():
     # ).all()
     # print(rows)
 
-    rows = session.get("users", [])
+    # rows = session.get("users", [])
 
-    return random.choice(rows), 200
+    rows = get_active_users()
+    # Reset all picked values when everyone has been picked
+    if all([user.picked for user in rows]):
+        for user in rows:
+            user.picked = False
+
+    user = random.choice([row for row in rows if not row.picked])
+    user.picked = True
+
+    db.session.commit()
+
+    return user.name, 200
 
 
 #### DARES
@@ -182,6 +196,9 @@ def set_played():
     db.session.commit()
 
     return "", 200
+
+
+#### PAGES
 
 
 @bp.route("/")
