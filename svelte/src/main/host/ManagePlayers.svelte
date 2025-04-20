@@ -9,8 +9,14 @@
   import { fetch_ } from "/shared/helper";
 
   console.log("hello world!");
-  let playersMenuOpen = $state(false);
-  let players = $state(["bob", "himbwafa", "test1231"]);
+
+  interface Props {
+    menusState: "closed" | "players" | "dares";
+  }
+  let { menusState = $bindable("closed") }: Props = $props();
+
+  let playersMenuOpen = $derived(menusState === "players");
+  let players: string[] = $state([]);
 
   let playerNameInput = $state("");
   let playerInputError: null | string = $state(null);
@@ -58,15 +64,27 @@
     fetch_("/get_users")
       .then((resp) => resp.json())
       .then((data) => (players = data));
+
+    // setTimeout(() => {
+    //   document
+    //     .querySelector("#toggle-dares-menu")
+    //     ?.addEventListener("click", () => {
+    //       playersMenuOpen = false;
+    //     });
+    // }, 1);
   });
 </script>
 
 <button
+  id="toggle-players-menu"
   class="{playersMenuOpen
     ? 'fixed'
     : 'absolute'} text-6xl text-gray-200 top-4 right-4 cursor-pointer hover:text-gray-400 z-30"
   aria-label="Manage Players"
-  onclick={() => (playersMenuOpen = !playersMenuOpen)}
+  onclick={() =>
+    menusState === "players"
+      ? (menusState = "closed")
+      : (menusState = "players")}
 >
   {#if !playersMenuOpen}
     <ion-icon name="people-outline"></ion-icon>

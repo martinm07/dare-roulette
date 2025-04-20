@@ -8,6 +8,7 @@
   import { PersistedState, FiniteStateMachine } from "runed";
   import { getRandomBrightColor } from "./helper";
   import { fade } from "svelte/transition";
+  import ManageDares from "./ManageDares.svelte";
 
   let dares: {
     content: string;
@@ -17,6 +18,7 @@
   }[] = $state([]);
 
   let wheelComp: IWheel | undefined = $state();
+  let menusState: "closed" | "players" | "dares" = $state("closed");
   let managePlayersComp: IManagePlayers | undefined = $state();
   let wheelDisabled: boolean = $state(false);
 
@@ -167,7 +169,9 @@
   <a href="/" class="absolute top-4 left-4 text-gray-200 text-xl underline"
     >← Back to home page</a
   >
-  <ManagePlayers bind:this={managePlayersComp} />
+  <ManagePlayers bind:this={managePlayersComp} bind:menusState />
+  <ManageDares {dares} bind:menusState />
+  <!-- <ManagePlayers bind:this={managePlayersComp} /> -->
   <h1 class="text-white text-3xl mb-4">Round {round.current}</h1>
 
   <span class="flex flex-col items-center">

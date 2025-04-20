@@ -188,6 +188,23 @@ def set_used():
     return "", 200
 
 
+@bp.route("/set_used_individual", methods=["POST"])
+@cors_enabled(methods=["POST"])
+def set_used_individual():
+    data: dict = json.loads(request.data.decode("utf-8"))
+
+    dares_toupdate = db.session.scalars(
+        select(Dare).where(Dare.content == data["content"] and Dare.by == data["by"])
+    ).all()
+
+    for dare in dares_toupdate:
+        dare.used = True
+
+    db.session.commit()
+
+    return "", 200
+
+
 @bp.route("/set_played", methods=["POST"])
 @cors_enabled(methods=["POST"])
 def set_played():
