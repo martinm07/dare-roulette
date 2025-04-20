@@ -158,6 +158,20 @@ def pick_user():
 def add_dare():
     data: dict = json.loads(request.data.decode("utf-8"))
 
+    # test = "123"
+    # test.strip()
+    if data["content"].strip() == "":
+        return "Missing dare", 400
+    if (
+        db.session.scalars(
+            select(Dare.content).where(
+                and_(Dare.content == data["content"], Dare.used == False)  # noqa: E712
+            )
+        ).first()
+        is not None
+    ):
+        return "Duplicate dare", 400
+
     new_dare = Dare(content=data["content"], by=session.get("username", ""))
     db.session.add(new_dare)
     db.session.commit()
