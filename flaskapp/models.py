@@ -32,6 +32,6 @@ class User(db.Model):
     date_created: Mapped[datetime] = mapped_column(
         server_default=func.current_timestamp()
     )
-    name: Mapped[str] = mapped_column(String(64), unique=True)
+    name: Mapped[str] = mapped_column(String(64))
     removed: Mapped[bool] = mapped_column(default=False)
     picked: Mapped[bool] = mapped_column(default=False)

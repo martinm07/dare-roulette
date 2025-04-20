@@ -3,7 +3,6 @@ import random
 
 from flask import Blueprint, redirect, render_template, request, session
 from sqlalchemy import and_, select
-from sqlalchemy.exc import IntegrityError
 
 from .extensions import db
 from .helper import cors_enabled
@@ -67,11 +66,17 @@ def add_user():
     # session["users"] = current_users + [name]
 
     new_user = User(name=name)
-    try:
-        db.session.add(new_user)
-        db.session.commit()
-    except IntegrityError:
+
+    if (
+        db.session.scalars(
+            select(User.name).where(and_(User.name == name, User.removed == False))  # noqa: E712
+        ).first()
+        is not None
+    ):
         return "Username already exists", 400
+
+    db.session.add(new_user)
+    db.session.commit()
 
     return "", 200
 
@@ -93,6 +98,18 @@ def remove_user():
     #     session["users"] = current_users
     # except ValueError:
     #     return "", 200
+
+    return "", 200
+
+
+@bp.route("/remove_all_users", methods=["POST"])
+@cors_enabled(methods=["POST"])
+def remove_all_users():
+    users = db.session.scalars(select(User).where(User.removed == False)).all()  # noqa: E712
+    for user in users:
+        user.removed = True
+
+    db.session.commit()
 
     return "", 200
 

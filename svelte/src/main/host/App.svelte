@@ -2,11 +2,12 @@
   import { onDestroy, onMount } from "svelte";
   import "/shared/tailwindinit.css";
   import { fetch_ } from "/shared/helper";
-  import ManagePlayers from "./ManagePlayers.svelte";
+  import ManagePlayers, { type IManagePlayers } from "./ManagePlayers.svelte";
   import type { IWheel } from "./Wheel.svelte";
   import Wheel from "./Wheel.svelte";
   import { PersistedState, FiniteStateMachine } from "runed";
   import { getRandomBrightColor } from "./helper";
+  import { fade } from "svelte/transition";
 
   let dares: {
     content: string;
@@ -16,6 +17,7 @@
   }[] = $state([]);
 
   let wheelComp: IWheel | undefined = $state();
+  let managePlayersComp: IManagePlayers | undefined = $state();
   let wheelDisabled: boolean = $state(false);
 
   const round = new PersistedState("round", 1);
@@ -115,6 +117,35 @@
       startplayer: "player",
     },
   });
+
+  let resetPassword = $state("");
+  let isResetPasswordWrong = $state(false);
+  let resetDialogEl: HTMLDialogElement | undefined = $state();
+  function checkResetPassword(e: SubmitEvent) {
+    e.preventDefault();
+    console.log("checking password");
+    isResetPasswordWrong = false;
+    fetch_("/check_password", {
+      method: "post",
+      body: resetPassword,
+      headers: { "Content-Type": "text/plain" },
+    })
+      .then((resp) => resp.json())
+      .then((iscorrect: boolean) => {
+        resetPassword = "";
+        if (!iscorrect) isResetPasswordWrong = true;
+        else {
+          console.log("Hello world! Password correct. Doing funky things...");
+          resetDialogEl?.close();
+          round.current = 1;
+          f.send("startdares");
+          f.send("startchoice");
+          f.send("startplayer");
+          wheelComp?.resetWheel();
+          managePlayersComp?.resetPlayers();
+        }
+      });
+  }
 </script>
 
 <!-- #364153 #6a7282  -->
@@ -136,7 +167,7 @@
   <a href="/" class="absolute top-4 left-4 text-gray-200 text-xl underline"
     >← Back to home page</a
   >
-  <ManagePlayers />
+  <ManagePlayers bind:this={managePlayersComp} />
   <h1 class="text-white text-3xl mb-4">Round {round.current}</h1>
 
   <span class="flex flex-col items-center">
@@ -155,7 +186,7 @@
         id="choose-player-button"
         class="my-4 transition-all px-4 py-2 rounded-2xl z-10 relative block cursor-pointer disabled:opacity-50 disabled:cursor-wait mb-40 border-8 border-green-500 text-green-500 text-2xl font-bold hover:px-8 ring-green-500/30 hover:ring-8 hover:bg-green-500/30 hover:text-green-400 disabled:pointer-events-none"
         onclick={choosePlayer}
-        disabled={choosingPlayer}
+        disabled={choosingPlayer || dares.length < 2}
       >
         Select the Victim
       </button>
@@ -178,8 +209,8 @@
     {#if pickedUser}
       <span
         id="display-user"
-        class="[.isLone]:text-red-300 text-gray-200 relative z-50 transition-all duration-1000 group-[.choice]:text-gray-600"
-        class:isLone={!displayDare}>{pickedUser}</span
+        class="text-red-300 relative z-50 transition-all duration-1000 group-[.choice]:text-gray-600"
+        >{pickedUser}</span
       >
     {/if}
     {#if displayDare}
@@ -189,8 +220,11 @@
         style="color: {displayDareColour};">{displayDare}</span
       >
     {/if}
-    <div class="text-center mt-4 absolute w-full">
-      {#if finishedTransition}
+    {#if finishedTransition}
+      <div
+        class="text-center mt-4 absolute w-full"
+        in:fade={{ duration: 1000 }}
+      >
         {#if choiceType === null}
           <button
             onclick={() => {
@@ -229,8 +263,8 @@
               : "Continue"}</button
           >
         {/if}
-      {/if}
-    </div>
+      </div>
+    {/if}
   </div>
   <div class="absolute text-gray-400 text-7xl" class:hidden={dares.length >= 2}>
     Waiting for submissions...
@@ -254,7 +288,47 @@
         >Reset Wheel</button
       >
     </div>
+    <div class="mt-8 text-right">
+      <button
+        class="cursor-pointer underline text-xl text-red-700 hover:no-underline"
+        onclick={() => {
+          resetDialogEl?.showModal();
+        }}>Reset Game</button
+      >
+    </div>
   </div>
+
+  <dialog
+    class="fixed p-4 top-1/2 left-1/2 -translate-1/2 bg-gray-800"
+    bind:this={resetDialogEl}
+  >
+    <button
+      aria-label="Close"
+      class="absolute top-0 left-0 text-5xl cursor-pointer text-gray-200"
+      onclick={() => resetDialogEl?.close()}
+      ><ion-icon name="close"></ion-icon></button
+    >
+    <form method="post" class="my-8" onsubmit={checkResetPassword}>
+      <div class="flex justify-center items-center flex-col sm:flex-row">
+        <input
+          type="text"
+          name="password"
+          id="password"
+          bind:value={resetPassword}
+          placeholder="Password"
+          class="bg-gray-100 p-4 text-xl focus:outline-none font-mono border-2 border-gray-400 rounded-lg"
+        />
+        <button
+          type="submit"
+          class="ml-5 bg-gray-200 transition-all hover:bg-gray-400 text-gray-800 font-bold px-6 py-3 rounded z-10 relative cursor-pointer disabled:opacity-50 disabled:cursor-wait text-xl mt-4 sm:mt-0"
+          >Check Password</button
+        >
+      </div>
+      {#if isResetPasswordWrong}
+        <div class="text-red-500 text-xl">Password incorrect</div>
+      {/if}
+    </form>
+  </dialog>
 </div>
 
 <style>

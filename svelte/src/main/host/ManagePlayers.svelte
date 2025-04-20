@@ -1,3 +1,9 @@
+<script module lang="ts">
+  export interface IManagePlayers {
+    resetPlayers(): void;
+  }
+</script>
+
 <script lang="ts">
   import { onMount } from "svelte";
   import { fetch_ } from "/shared/helper";
@@ -38,6 +44,13 @@
         const index = players.indexOf(name);
         if (index !== -1) players.splice(index, 1);
       }
+    });
+  }
+
+  export function resetPlayers() {
+    fetch_("/remove_all_users", { method: "post" }).then((resp) => {
+      if (!resp.ok) return;
+      players = [];
     });
   }
 
