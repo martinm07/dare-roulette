@@ -7,6 +7,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fetch_ } from "/shared/helper";
+  import { playerCount } from "./helper";
+  import { watch } from "runed";
 
   console.log("hello world!");
 
@@ -17,6 +19,12 @@
 
   let playersMenuOpen = $derived(menusState === "players");
   let players: string[] = $state([]);
+  watch(
+    () => players.length,
+    () => {
+      playerCount.set(players.length);
+    }
+  );
 
   let playerNameInput = $state("");
   let playerInputError: null | string = $state(null);

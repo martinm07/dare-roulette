@@ -26,6 +26,7 @@
     }) => void;
     isSpinning?: boolean;
     disabled?: boolean;
+    showWheelDares?: boolean;
     SPINTIME?: number;
   }
 
@@ -34,6 +35,7 @@
     onSpinFinish,
     isSpinning = $bindable(false),
     disabled = false,
+    showWheelDares = false,
     SPINTIME = 15000,
   }: Props = $props();
 
@@ -258,7 +260,11 @@
       style="--i: {i}; background-color: {dare.colour};"
       bind:this={sliceEls[i]}
     >
-      Mysterious #{i + 1}
+      {#if showWheelDares}
+        {dare.content}
+      {:else}
+        Mysterious #{i + 1}
+      {/if}
     </div>
   {/each}
 </div>

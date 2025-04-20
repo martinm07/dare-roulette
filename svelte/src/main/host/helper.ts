@@ -1,3 +1,5 @@
+import { writable } from "svelte/store";
+
 // export function getRandomBrightColor() {
 //   const hue = Math.floor(Math.random() * 360); // Any hue
 //   const saturation = 100; // Full saturation for vibrancy
@@ -11,3 +13,5 @@ export function getRandomBrightColor() {
   const lightness = 85; // High lightness for pastel feel
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
+
+export const playerCount = writable(0);

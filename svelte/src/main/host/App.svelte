@@ -6,7 +6,7 @@
   import type { IWheel } from "./Wheel.svelte";
   import Wheel from "./Wheel.svelte";
   import { PersistedState, FiniteStateMachine } from "runed";
-  import { getRandomBrightColor } from "./helper";
+  import { getRandomBrightColor, playerCount } from "./helper";
   import { fade } from "svelte/transition";
   import ManageDares from "./ManageDares.svelte";
 
@@ -26,6 +26,7 @@
 
   let isSpinning = $state(false);
   let allowRepeats = $state(false);
+  let showWheelDares = $state(false);
 
   let displayDare: string = $state("");
   let displayDareColour: string = $state("");
@@ -172,7 +173,9 @@
   <ManagePlayers bind:this={managePlayersComp} bind:menusState />
   <ManageDares {dares} bind:menusState />
   <!-- <ManagePlayers bind:this={managePlayersComp} /> -->
-  <h1 class="text-white text-3xl mb-4">Round {round.current}</h1>
+  <h1 class="text-white text-3xl mb-4 mt-3">
+    Round {round.current} (Players: {$playerCount})
+  </h1>
 
   <span class="flex flex-col items-center">
     <Wheel
@@ -180,6 +183,7 @@
       {dares}
       {onSpinFinish}
       disabled={wheelDisabled}
+      {showWheelDares}
       bind:isSpinning
     />
   </span>
@@ -190,7 +194,7 @@
         id="choose-player-button"
         class="my-4 transition-all px-4 py-2 rounded-2xl z-10 relative block cursor-pointer disabled:opacity-50 disabled:cursor-wait mb-40 border-8 border-green-500 text-green-500 text-2xl font-bold hover:px-8 ring-green-500/30 hover:ring-8 hover:bg-green-500/30 hover:text-green-400 disabled:pointer-events-none"
         onclick={choosePlayer}
-        disabled={choosingPlayer || dares.length < 2}
+        disabled={choosingPlayer || dares.length < 2 || $playerCount < 1}
       >
         Select the Victim
       </button>
@@ -274,7 +278,7 @@
     Waiting for submissions...
   </div>
 
-  <div class="absolute right-5 bottom-5 text-2xl">
+  <div class="absolute right-5 bottom-5 text-2xl text-right">
     <div>
       <label for="allow-repeats" class="text-gray-200">Allow Repeats?</label>
       <input
@@ -283,6 +287,18 @@
         name="allow-repeats"
         id="allow-repeats"
         bind:checked={allowRepeats}
+      />
+    </div>
+    <div class="mt-4">
+      <label for="reveal-wheel-dares" class="text-gray-200"
+        >Show Dares on Wheel</label
+      >
+      <input
+        class="w-10 h-5"
+        type="checkbox"
+        name="reveal-wheel-dares"
+        id="reveal-wheel-dares"
+        bind:checked={showWheelDares}
       />
     </div>
     <div class="mt-8">
