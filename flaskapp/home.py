@@ -57,6 +57,9 @@ def set_name():
 def add_user():
     name: str = request.data.decode("utf-8")
 
+    if not name:
+        return "Missing username", 400
+
     # current_users = session.get("users", [])
     # if name in current_users:
     #     return "Username already exists", 400

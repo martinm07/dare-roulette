@@ -2,6 +2,11 @@
   export interface IWheel {
     spinWheel: () => void;
     resetWheel: () => void;
+    // changeColours(
+    //   type: "alternating",
+    //   colours: [even: string, odd: string]
+    // ): void;
+    // changeColours(type: "alternating" | "individual", colours: string[]): void;
   }
 </script>
 
@@ -11,16 +16,16 @@
   import { fetch_ } from "/shared/helper";
   import { watch } from "runed";
 
-  // const SPINTIME = 15000;
-
   interface Props {
-    dares: { content: string; by: string; played: boolean }[];
+    dares: { content: string; by: string; played: boolean; colour: string }[];
     onSpinFinish: (selectedDare: {
       content: string;
       by: string;
       played: boolean;
+      colour: string;
     }) => void;
     isSpinning?: boolean;
+    disabled?: boolean;
     SPINTIME?: number;
   }
 
@@ -28,6 +33,7 @@
     dares,
     onSpinFinish,
     isSpinning = $bindable(false),
+    disabled = false,
     SPINTIME = 15000,
   }: Props = $props();
 
@@ -201,6 +207,31 @@
     });
   }
 
+  let sliceEls: HTMLDivElement[] = $state([]);
+
+  // export function changeColours(
+  //   type: "alternating",
+  //   colours: [even: string, odd: string]
+  // ): void;
+  // export function changeColours(
+  //   type: "alternating" | "individual",
+  //   colours: string[]
+  // ): void {
+  //   const assign = (el: HTMLDivElement, color: string) => {
+  //     // if (!color.startsWith("#")) el.style.backgroundColor = "#" + color;
+  //     // else el.style.backgroundColor = color;
+  //     el.style.backgroundColor = color;
+  //   };
+
+  //   console.log("Changing colours!", type, colours);
+
+  //   sliceEls.forEach((el, i) => {
+  //     if (type === "alternating" && i % 2 === 0) assign(el, colours[0]);
+  //     else if (type === "alternating" && i % 2 === 1) assign(el, colours[1]);
+  //     else if (type === "individual") assign(el, colours[i]);
+  //   });
+  // }
+
   onMount(() => {
     initAudio();
   });
@@ -221,10 +252,17 @@
   bind:this={wheel}
 >
   {#each dares as dare, i}
-    <div class="roulette-segment" style="--i: {i};">{dare.content}</div>
+    <div
+      class="roulette-segment [.inactive]:text-gray-400 text-gray-800 font-bold"
+      class:inactive={disabled}
+      style="--i: {i}; background-color: {dare.colour};"
+      bind:this={sliceEls[i]}
+    >
+      Mysterious #{i + 1}
+    </div>
   {/each}
 </div>
-<div class="w-10 h-10 bg-green-700" id="pointer"></div>
+<div class="w-20 h-20 bg-green-500" id="pointer"></div>
 
 <style>
   #pointer {
@@ -245,7 +283,7 @@
       13% 36%,
       42% 6%
     );
-    transform: translateY(-15px);
+    transform: translateY(-5px);
   }
 
   .roulette-wheel {
@@ -262,7 +300,7 @@
   .roulette-segment {
     display: grid;
 
-    --hov: 0;
+    --hov: 0.1;
     --ba: 1turn / var(--n); /* angle of one slice */
     --ca: var(--i) * var(--ba) + 0.25 * var(--ba) * var(--n);
 
@@ -286,15 +324,21 @@
     transition: 0.3s;
     counter-reset: i calc(var(--i) + 1);
 
-    &:hover {
+    /* &:hover {
       --hov: 1;
-    } /* flip hover flag */
+    } flip hover flag */
+  }
+  .roulette-segment.inactive {
+    cursor: default;
+  }
+  .roulette-segment:not(.inactive):hover {
+    --hov: 1;
   }
 
-  .roulette-segment:nth-child(even) {
-    background-color: #6d8186;
+  .roulette-segment.inactive:nth-child(even) {
+    background-color: #364153 !important;
   }
-  .roulette-segment:nth-child(odd) {
-    background-color: #2196f3;
+  .roulette-segment.inactive:nth-child(odd) {
+    background-color: #6a7282 !important;
   }
 </style>
