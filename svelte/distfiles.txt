@@ -5,9 +5,9 @@ main\player\index.html
 static\main\aud\click-Hf2CT4va.wav
 static\main\css\host-DJ7cCeE_.css
 static\main\css\player-WjiJfP1Y.css
-static\main\css\tailwindinit-CyBURSvw.css
-static\main\js\home-CZ__T7pK.js
-static\main\js\host-BAi8qDdT.js
-static\main\js\if-DLm-t1Ci.js
-static\main\js\player-zkI6s7xa.js
-static\main\js\svelte-DyNGU_nP.js
+static\main\css\tailwindinit-CdrtJCde.css
+static\main\js\home-B3-l-RIt.js
+static\main\js\host-D23kciuG.js
+static\main\js\persisted-state.svelte-D1YmG_A9.js
+static\main\js\player-Cpb0JZ4t.js
+static\main\js\svelte-DtLJqUBj.js

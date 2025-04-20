@@ -1,1 +1,0 @@
-import{l as E,ad as I,r as i,o as u,q as o,ae as N}from"./svelte-DyNGU_nP.js";function m(_,b,[n,h]=[0,0]){var t=_,e=null,a=null,f=N,v=n>0?I:0,r=!1;const p=(s,l=!0)=>{r=!0,c(l,s)},c=(s,l)=>{f!==(f=s)&&(f?(e?i(e):l&&(e=u(()=>l(t))),a&&o(a,()=>{a=null})):(a?i(a):l&&(a=u(()=>l(t,[n+1,h]))),e&&o(e,()=>{e=null})))};E(()=>{r=!1,b(p),r||c(null,null)},v)}export{m as i};
