@@ -22,7 +22,7 @@ bp = Blueprint("home", __name__)
 
 #     return "", 201
 
-SET_PASSWORD = "pass"
+SET_PASSWORD = "bigpoopybumfarts69"
 
 
 @bp.route("/check_password", methods=["OPTIONS", "POST"])
